@@ -1,1 +1,33 @@
-sdksdks
+#!/bin/bash
+
+# Проверка количества параметров
+if [ "$#" -lt 1 ]; then
+    echo "Ошибка: Не указаны файлы."
+    exit 1
+fi
+
+# Проверка аргумента на пустоту
+for file in "$@"; do
+    if [ -z "$file" ]; then
+        echo "Ошибка: Пустое имя файла."
+        exit 1
+    fi
+done
+
+# Основной цикл
+while true; do
+    echo "Введите имя файла (или 'exit' для выхода): "
+    read filename
+
+    if [ "$filename" == "exit" ]; then
+        break
+    fi
+
+    # Проверка наличия файла и прав на чтение
+    if [ -e "$filename" ] && [ -r "$filename" ]; then
+        cat "$filename"
+        echo "---------------------"  # Отделение вывода
+    else
+        echo "Ошибка: Файл '$filename' не найден или недоступен для чтения."
+    fi
+done

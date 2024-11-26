@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Функция для обработки недопустимой опции
+invalid_option() {
+    echo "Недопустимая опция: -$1"
+    exit 1
+}
+
+# Обработка опций
+while getopts ":f:m:" opt; do
+    case $opt in
+        f)
+            # Создать файл с именем name, если его нет
+            if [ ! -f "$OPTARG" ]; then
+                touch "$OPTARG"
+                echo "Файл '$OPTARG' создан."
+            else
+                echo "Файл '$OPTARG' уже существует."
+            fi
+            ;;
+        m)
+            # Выдать значение параметра name
+            echo "Значение параметра: $OPTARG"
+            ;;
+        \?)
+            invalid_option "$OPTARG"
+            ;;
+    esac
+done

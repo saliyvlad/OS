@@ -1,39 +1,43 @@
-name=""
-count=0
+#!/bin/bash
 
-# Обработка опций с помощью getopts
-while getopts ":n:c:" opt; do
+# Инициализация переменных
+param_count=0
+command=""
+
+# Обработка параметров командной строки
+while getopts "f:m:" opt; do
     case $opt in
-        n)
-            name="$OPTARG"
+        f)
+            command="$OPTARG"
             ;;
-        c)
-            count="$OPTARG"
+        m)
+            file_name="$OPTARG"
             ;;
-        \?)
-            echo "Неверная опция: -$OPTARG" >&2
-            exit 1
-            ;;
-        :)
-            echo "Опция -$OPTARG требует аргумент." >&2
+        *)
+            echo "Неизвестная опция"
             exit 1
             ;;
     esac
+    ((param_count++))
 done
 
-# Вывод информации о переданных параметрах
-echo "Количество переданных параметров: $#"
-echo "Имя: $name"
-echo "Число: $count"
+# Вывод первых двух параметров
+shift $((OPTIND - 1))
+echo "Первые два параметра: $1 $2"
 
-# Проверка, если имя файла задано, и вывод его содержимого
-if [ -n "$name" ]; then
-    if [ -f "$name" ]; then
-        echo "Содержимое файла $name:"
-        cat "$name"
+# Вывод числа параметров
+echo "Число параметров: $param_count"
+
+# Проверка опции -f
+if [[ -n "$command" ]]; then
+    read -p "Введите команду: " input_command
+fi
+
+# Проверка опции -m
+if [[ -n "$file_name" ]]; then
+    if [[ -e "$file_name" ]]; then
+        echo "Файл '$file_name' существует."
     else
-        echo "$name не является файлом."
+        echo "Такого файла нет."
     fi
-else
-    echo "Имя файла не указано."
 fi

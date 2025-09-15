@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cmath>
-#include <vector>
 using namespace std;
 
 class Parallelogram {
@@ -37,11 +36,6 @@ public:
         cout << "Стороны: a = " << a << ", b = " << b 
              << ", угол = " << alpha << "°, площадь = " << area() << endl;
     }
-
-    // Геттеры
-    double getA() const { return a; }
-    double getB() const { return b; }
-    double getAlpha() const { return alpha; }
 };
 
 int main() {
@@ -49,7 +43,8 @@ int main() {
     cout << "Введите количество параллелограммов: ";
     cin >> N;
 
-    vector<Parallelogram> parallelograms;
+    // Создаем массив указателей на объекты Parallelogram
+    Parallelogram** parallelograms = new Parallelogram*[N];
     
     // Создание N параллелограммов
     for (int i = 0; i < N; i++) {
@@ -62,7 +57,8 @@ int main() {
         cout << "Введите угол между сторонами (в градусах): ";
         cin >> alpha;
         
-        parallelograms.push_back(Parallelogram(a, b, alpha));
+        // Создаем объект в динамической памяти
+        parallelograms[i] = new Parallelogram(a, b, alpha);
     }
 
     // Подсчет квадратов и прямоугольников
@@ -72,12 +68,12 @@ int main() {
     cout << "\n=== РЕЗУЛЬТАТЫ ===" << endl;
     for (int i = 0; i < N; i++) {
         cout << "Параллелограмм " << i + 1 << ": ";
-        parallelograms[i].printInfo();
+        parallelograms[i]->printInfo();
         
-        if (parallelograms[i].isSquare()) {
+        if (parallelograms[i]->isSquare()) {
             cout << "  -> Это КВАДРАТ" << endl;
             k1++;
-        } else if (parallelograms[i].isRectangle()) {
+        } else if (parallelograms[i]->isRectangle()) {
             cout << "  -> Это ПРЯМОУГОЛЬНИК" << endl;
             k2++;
         } else {
@@ -90,6 +86,12 @@ int main() {
     cout << "Количество квадратов (k1): " << k1 << endl;
     cout << "Количество прямоугольников (k2): " << k2 << endl;
     cout << "Количество других параллелограммов: " << N - k1 - k2 << endl;
+
+    // Освобождение памяти
+    for (int i = 0; i < N; i++) {
+        delete parallelograms[i]; // удаляем каждый объект
+    }
+    delete[] parallelograms; // удаляем массив указателей
 
     return 0;
 }
